@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Library</string>
+    <string name="no_read_storage_permission">无读取sdcard存储权限</string>
+    <string name="cannot_select_more_image">最多能选择 %1$d 张图片</string>
+    <string name="image_selected_result">完成(%1$d/%2$d)</string>
+    <string name="completed">完成</string>
+    <string name="preview_image">预览(%1$d)</string>
+    <string name="preview">预览</string>
+    <string name="folder_des">%1$d张图片</string>
+    <string name="all_images">全部图片</string>
+</resources>
