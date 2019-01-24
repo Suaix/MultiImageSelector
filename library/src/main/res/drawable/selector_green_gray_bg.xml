@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/rect_green_nine_rad" />
+    <item android:drawable="@drawable/rect_gray_nine_rad" android:state_enabled="false" />
+</selector>

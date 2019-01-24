@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.summer.imageselector.MultiImageSelectorActivity"/>
+        <activity android:name="com.summer.imageselector.ImagePreviewActivity"/>
     </application>
 
 </manifest>

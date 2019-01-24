@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_launch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MultiImageSelector.with()
+                MultiImageSelector.with(MultiImageSelector.MULTI_MODE)
                         .maxImageSize(9)
                         .selectedImageList(selectedImageList)
                         .build()
@@ -42,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             selectedImageList = extras.getParcelableArrayList(MultiImageSelector.RESULT_MULTI_DATA);
             tvResult.setText(selectedImageList.toString());
+        } else if (requestCode == 2 && resultCode == RESULT_OK){
+            Bundle extras = data.getExtras();
+            ImageInfo imageInfo = extras.getParcelable(MultiImageSelector.RESULT_SINGLE_DATA);
+            tvResult.setText(imageInfo.toString());
         }
     }
 }

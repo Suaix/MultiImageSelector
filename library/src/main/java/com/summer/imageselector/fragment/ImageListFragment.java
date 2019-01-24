@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.summer.imageselector.ImagePreviewActivity;
 import com.summer.imageselector.MultiImageSelector;
 import com.summer.imageselector.adapter.FolderAdapter;
 import com.summer.imageselector.adapter.ImageAdapter;
@@ -30,7 +31,6 @@ import com.summer.library.R;
 import com.summer.library.Utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -158,7 +158,22 @@ public class ImageListFragment extends Fragment implements Callback, View.OnClic
      * 预览选中的图片
      */
     private void previewSelectedImages() {
+        ArrayList<ImageInfo> selectedImages = getSortSelectedImageList();
+        ImagePreviewActivity.launch(getActivity(), 1, selectedImages, 0, maxImageSize, false);
+    }
 
+    @NonNull
+    private ArrayList<ImageInfo> getSortSelectedImageList() {
+        ArrayList<ImageInfo> selectedImages = imageAdapter.getSelectedImages();
+        if (selectedImages != null){
+            Collections.sort(selectedImages, new Comparator<ImageInfo>() {
+                @Override
+                public int compare(ImageInfo imageInfo1, ImageInfo imageInfo2) {
+                    return imageInfo1.getIndex() - imageInfo2.getIndex();
+                }
+            });
+        }
+        return selectedImages;
     }
 
     /**
@@ -179,13 +194,7 @@ public class ImageListFragment extends Fragment implements Callback, View.OnClic
      * 完成图片选择，将结果返回并关闭页面
      */
     private void completeImageSelect() {
-        ArrayList<ImageInfo> selectedImages = imageAdapter.getSelectedImages();
-        Collections.sort(selectedImages, new Comparator<ImageInfo>() {
-            @Override
-            public int compare(ImageInfo imageInfo1, ImageInfo imageInfo2) {
-                return imageInfo1.getIndex() - imageInfo2.getIndex();
-            }
-        });
+        ArrayList<ImageInfo> selectedImages = getSortSelectedImageList();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(MultiImageSelector.RESULT_MULTI_DATA, selectedImages);
         setResultAndFinish(bundle);
@@ -227,7 +236,8 @@ public class ImageListFragment extends Fragment implements Callback, View.OnClic
             setResultAndFinish(bundle);
         } else {
             //多选模式，点击图片去预览，预览整个图片库
-            // TODO: 2019/1/6
+            ArrayList<ImageInfo> sortSelectedImageList = getSortSelectedImageList();
+            ImagePreviewActivity.launch(getActivity(), 1, sortSelectedImageList, position, maxImageSize, true);
         }
     }
 
