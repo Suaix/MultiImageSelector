@@ -14,28 +14,28 @@ import com.summer.library.R;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * 预览页面已选则图片列表适配器
  */
-public class PreviewSelectedImageAdapter extends RecyclerView.Adapter<PreviewSelectedImageAdapter.ViewHolder> {
+public class PreviewSelectedImageAdapter extends RecyclerView.Adapter<PreviewSelectedImageAdapter.ImageHolder> {
 
     private ArrayList<ImageInfo> mSelectedImageList;
 
-    private ImageInfo currentPreviewImage;
+    private int currentSelectedIndex = -1;
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_preview_selected_image, parent, false));
+    public ImageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ImageHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_preview_selected_image, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ImageHolder holder, int position) {
         ImageInfo imageInfo = mSelectedImageList.get(position);
-        Log.i("xia", "onBindViewHolder, imageInfo:/n" + imageInfo.toString());
         Glide.with(holder.ivImage).load(new File(imageInfo.getPath())).into(holder.ivImage);
-        if (currentPreviewImage != null && currentPreviewImage.getId() == imageInfo.getId()) {
+        if (position == currentSelectedIndex) {
             holder.selectedMark.setVisibility(View.VISIBLE);
         } else {
             holder.selectedMark.setVisibility(View.GONE);
@@ -50,11 +50,11 @@ public class PreviewSelectedImageAdapter extends RecyclerView.Adapter<PreviewSel
      */
     public void onMove(int fromPosition, int toPosition) {
         //对原数据进行移动
-//        Collections.swap(mSelectedImageList, fromPosition, toPosition);
         ImageInfo fromImageInfo = mSelectedImageList.get(fromPosition);
         fromImageInfo.setIndex(toPosition + 1);
         ImageInfo toImageInfo = mSelectedImageList.get(toPosition);
         toImageInfo.setIndex(fromPosition+1);
+        Collections.swap(mSelectedImageList, fromPosition, toPosition);
         //通知数据移动
         notifyItemMoved(fromPosition, toPosition);
     }
@@ -77,20 +77,28 @@ public class PreviewSelectedImageAdapter extends RecyclerView.Adapter<PreviewSel
     /**
      * 设置当前预览的图片信息
      *
-     * @param currentPreviewImage 当前预览的图片信息
+     * @param index 选中图片的角标
      */
-    public void setCurrentPreviewImage(ImageInfo currentPreviewImage) {
-        this.currentPreviewImage = currentPreviewImage;
-        Log.i("xia", "setCurrentPreviewImage:" + currentPreviewImage.toString());
-        notifyDataSetChanged();
+    public void notifyItemSelected(int index) {
+        if (index == currentSelectedIndex){
+            //角标不合法或者没有变化，不做操作
+            return;
+        }
+        //先将当前选中的位置设置为未选中态
+        notifyItemChanged(currentSelectedIndex, false);
+        if (index >= 0 && index < mSelectedImageList.size()){
+            //再将新的角标位置选中
+            notifyItemChanged(index, true);
+        }
+        currentSelectedIndex = index;
     }
 
-    protected static class ViewHolder extends RecyclerView.ViewHolder {
+    protected static class ImageHolder extends RecyclerView.ViewHolder {
 
         View selectedMark;
         ImageView ivImage;
 
-        public ViewHolder(View itemView) {
+        public ImageHolder(View itemView) {
             super(itemView);
             selectedMark = itemView.findViewById(R.id.image_selected);
             ivImage = itemView.findViewById(R.id.iv_image);

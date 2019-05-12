@@ -13,6 +13,7 @@ import com.summer.imageselector.data.ImageInfo;
 import com.summer.library.R;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -60,6 +61,11 @@ public class PreviewImageAdapter extends RecyclerView.Adapter<PreviewImageAdapte
     public void setImageInfoList(List<ImageInfo> imageInfoList) {
         this.imageInfoList = imageInfoList;
         notifyDataSetChanged();
+    }
+
+    public void onMove(int fromPostion, int targetPosition) {
+        Collections.swap(imageInfoList, fromPostion, targetPosition);
+        notifyItemMoved(fromPostion, targetPosition);
     }
 
     protected static class PreviewImageHolder extends RecyclerView.ViewHolder {

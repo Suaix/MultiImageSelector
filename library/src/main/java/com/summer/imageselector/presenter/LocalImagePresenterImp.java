@@ -2,7 +2,6 @@ package com.summer.imageselector.presenter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.media.Image;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -12,8 +11,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 
-import com.summer.imageselector.adapter.FolderAdapter;
-import com.summer.imageselector.adapter.ImageAdapter;
 import com.summer.imageselector.data.FolderInfo;
 import com.summer.imageselector.data.ImageInfo;
 import com.summer.imageselector.fragment.Callback;
@@ -84,7 +81,7 @@ public class LocalImagePresenterImp implements IImagePresenter, LoaderManager.Lo
         } else {
             //加载单个文件夹
             List<ImageInfo> imageInfoList = folderInfo.getImageInfoList();
-            mCallback.setImageInfoList(imageInfoList);
+            mCallback.onImageListResult(imageInfoList);
 //            Bundle args = new Bundle();
 //            args.putString("path", folderInfo.getPath());
 //            mLoaderManager.restartLoader(ID_LOAD_FOLDER, args, this);
@@ -153,7 +150,7 @@ public class LocalImagePresenterImp implements IImagePresenter, LoaderManager.Lo
 
                 } while (data.moveToNext());
 
-                mCallback.setImageInfoList(images);
+                mCallback.onImageListResult(images);
 
                 if (!hasGenerateFolders) {
                     if (mImageFolders != null && mImageFolders.size() > 0) {
@@ -163,7 +160,7 @@ public class LocalImagePresenterImp implements IImagePresenter, LoaderManager.Lo
                         allFolderInfo.setCover(firstFolderInfo.getCover());
                         allFolderInfo.setId(-1);
                         mImageFolders.add(0, allFolderInfo);
-                        mCallback.setFolderInfoList(mImageFolders);
+                        mCallback.onFolderInfoListResult(mImageFolders);
                     }
                     hasGenerateFolders = true;
                 }

@@ -208,14 +208,14 @@ public class ImageListFragment extends Fragment implements Callback, View.OnClic
     }
 
     @Override
-    public void setImageInfoList(List<ImageInfo> images) {
+    public void onImageListResult(List<ImageInfo> images) {
         if (imageAdapter != null) {
             imageAdapter.setImageInfoList(images);
         }
     }
 
     @Override
-    public void setFolderInfoList(List<FolderInfo> mImageFolders) {
+    public void onFolderInfoListResult(List<FolderInfo> mImageFolders) {
         if (folderAdapter != null) {
             folderAdapter.setFolderInfoList(mImageFolders);
         }
