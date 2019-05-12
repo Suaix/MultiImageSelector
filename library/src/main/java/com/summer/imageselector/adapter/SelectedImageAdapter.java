@@ -2,13 +2,13 @@ package com.summer.imageselector.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.summer.imageselector.ImagePreviewActivity;
 import com.summer.imageselector.data.ImageInfo;
 import com.summer.library.R;
 
@@ -19,11 +19,17 @@ import java.util.Collections;
 /**
  * 预览页面已选则图片列表适配器
  */
-public class PreviewSelectedImageAdapter extends RecyclerView.Adapter<PreviewSelectedImageAdapter.ImageHolder> {
-
+public class SelectedImageAdapter extends RecyclerView.Adapter<SelectedImageAdapter.ImageHolder> {
+    /**
+     * 选中图片列表
+     */
     private ArrayList<ImageInfo> mSelectedImageList;
-
+    /**
+     * 当前选中图片的角标，初始值为-1（即未选中任何图片）
+     */
     private int currentSelectedIndex = -1;
+
+    private OnImageItemClickListener listener;
 
     @NonNull
     @Override
@@ -32,7 +38,7 @@ public class PreviewSelectedImageAdapter extends RecyclerView.Adapter<PreviewSel
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ImageHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ImageHolder holder, final int position) {
         ImageInfo imageInfo = mSelectedImageList.get(position);
         Glide.with(holder.ivImage).load(new File(imageInfo.getPath())).into(holder.ivImage);
         if (position == currentSelectedIndex) {
@@ -40,6 +46,15 @@ public class PreviewSelectedImageAdapter extends RecyclerView.Adapter<PreviewSel
         } else {
             holder.selectedMark.setVisibility(View.GONE);
         }
+        holder.ivImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notifyItemSelected(position);
+                if (listener != null){
+                    listener.onImageItemClick(position);
+                }
+            }
+        });
     }
 
     /**
@@ -91,6 +106,14 @@ public class PreviewSelectedImageAdapter extends RecyclerView.Adapter<PreviewSel
             notifyItemChanged(index, true);
         }
         currentSelectedIndex = index;
+    }
+
+    public void setOnItemClickListener(OnImageItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnImageItemClickListener{
+        void onImageItemClick(int position);
     }
 
     protected static class ImageHolder extends RecyclerView.ViewHolder {

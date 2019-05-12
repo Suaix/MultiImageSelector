@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +59,8 @@ public class ImageListFragment extends Fragment implements Callback, View.OnClic
     private int selectMode;
     private int maxImageSize;
     private ArrayList<ImageInfo> selectedImageList;
+
+    private final int PREVIEW_IMAGE_REQUEST_CODE = 1;
 
     public static ImageListFragment newInstance(Bundle bundle) {
         ImageListFragment fragment = new ImageListFragment();
@@ -159,7 +163,7 @@ public class ImageListFragment extends Fragment implements Callback, View.OnClic
      */
     private void previewSelectedImages() {
         ArrayList<ImageInfo> selectedImages = getSortSelectedImageList();
-        ImagePreviewActivity.launch(getActivity(), 1, selectedImages, 0, maxImageSize, false);
+        ImagePreviewActivity.launch(getActivity(), PREVIEW_IMAGE_REQUEST_CODE, selectedImages, 0, maxImageSize, false);
     }
 
     @NonNull
@@ -237,7 +241,7 @@ public class ImageListFragment extends Fragment implements Callback, View.OnClic
         } else {
             //多选模式，点击图片去预览，预览整个图片库
             ArrayList<ImageInfo> sortSelectedImageList = getSortSelectedImageList();
-            ImagePreviewActivity.launch(getActivity(), 1, sortSelectedImageList, position, maxImageSize, true);
+            ImagePreviewActivity.launch(getActivity(), PREVIEW_IMAGE_REQUEST_CODE, sortSelectedImageList, position, maxImageSize, true);
         }
     }
 
@@ -271,5 +275,24 @@ public class ImageListFragment extends Fragment implements Callback, View.OnClic
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PREVIEW_IMAGE_REQUEST_CODE && data != null){
+            ArrayList<ImageInfo> selectedImageList = data.getParcelableArrayListExtra(MultiImageSelector.RESULT_MULTI_DATA);
+            if (selectedImageList != null){
+                Collections.sort(selectedImageList, new Comparator<ImageInfo>() {
+                    @Override
+                    public int compare(ImageInfo imageInfo1, ImageInfo imageInfo2) {
+                        return imageInfo1.getIndex() - imageInfo2.getIndex();
+                    }
+                });
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList(MultiImageSelector.RESULT_MULTI_DATA, selectedImageList);
+                setResultAndFinish(bundle);
+            }
+        }
     }
 }

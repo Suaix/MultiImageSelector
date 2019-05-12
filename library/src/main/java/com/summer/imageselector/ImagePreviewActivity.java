@@ -14,9 +14,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.summer.imageselector.adapter.PreviewImageAdapter;
-import com.summer.imageselector.adapter.PreviewSelectedImageAdapter;
+import com.summer.imageselector.adapter.SelectedImageAdapter;
 import com.summer.imageselector.data.FolderInfo;
 import com.summer.imageselector.data.ImageInfo;
 import com.summer.imageselector.fragment.Callback;
@@ -25,13 +26,12 @@ import com.summer.imageselector.presenter.LocalImagePresenterImp;
 import com.summer.library.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * 图片预览页面
  */
-public class ImagePreviewActivity extends AppCompatActivity implements Callback {
+public class ImagePreviewActivity extends AppCompatActivity implements Callback, View.OnClickListener, SelectedImageAdapter.OnImageItemClickListener {
     private RecyclerView mPreviewRecyclerView;
     private RecyclerView mSelectedRecyclerView;
     private TextView tvIndex;
@@ -44,7 +44,7 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback 
     /**
      * 选中图片的适配器
      */
-    private PreviewSelectedImageAdapter selectedImageAdapter;
+    private SelectedImageAdapter selectedImageAdapter;
     /**
      * 当前预览图片的角标
      */
@@ -159,12 +159,10 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback 
      * 添加监听
      */
     private void addListener() {
-        tvSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        tvSelect.setOnClickListener(this);
+        tvIndex.setOnClickListener(this);
+        tvOk.setOnClickListener(this);
+        selectedImageAdapter.setOnItemClickListener(this);
     }
 
     /**
@@ -181,6 +179,10 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback 
         }
 
         selectedImageAdapter.setSelectedImageList(mSelectedImageList);
+        if (!mSelectedImageList.isEmpty()){
+            mSelectedRecyclerView.setVisibility(View.VISIBLE);
+            tvOk.setText(String.format(getString(R.string.image_selected_result), mSelectedImageList.size(), maxSelectedCount));
+        }
 
         if (needLoadAllImages) {
             LoaderManager loaderManager = getSupportLoaderManager();
@@ -194,9 +196,6 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback 
             int size = mPreviewImageList.size();
             totalPreviewImageSize = size;
             tvIndex.setText(String.format(getString(R.string.index_of_total), currentPreviewIndex + 1, size));
-            if (size > 0) {
-                tvOk.setText(String.format(getString(R.string.image_selected_result), size, maxSelectedCount));
-            }
             if (currentPreviewIndex > 0){
                 mPreviewRecyclerView.scrollToPosition(currentPreviewIndex);
             }
@@ -229,7 +228,7 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback 
         LinearLayoutManager selectLayoutManager = new LinearLayoutManager(this);
         selectLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mSelectedRecyclerView.setLayoutManager(selectLayoutManager);
-        selectedImageAdapter = new PreviewSelectedImageAdapter();
+        selectedImageAdapter = new SelectedImageAdapter();
         mSelectedRecyclerView.setAdapter(selectedImageAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(imageTouchHelperCallback);
         touchHelper.attachToRecyclerView(mSelectedRecyclerView);
@@ -247,6 +246,7 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback 
     private void onPagerPositionChanged(int position) {
         if (position >= totalPreviewImageSize)
             return;
+        currentPreviewIndex = position;
         tvIndex.setText(String.format(getString(R.string.index_of_total), position + 1, totalPreviewImageSize));
         syncSelectedStatus(position);
     }
@@ -275,6 +275,9 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback 
                 //选中图片在屏幕内不可完全可见，滑动列表
                 mSelectedRecyclerView.scrollToPosition(selectedIndex);
             }
+            tvSelect.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_folder_selected, 0, 0, 0);
+        } else {
+            tvSelect.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_folder_unselected, 0, 0, 0);
         }
         selectedImageAdapter.notifyItemSelected(selectedIndex);
     }
@@ -302,5 +305,71 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback 
     @Override
     public void onFolderInfoListResult(List<FolderInfo> mImageFolders) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        int viewId = v.getId();
+        if (viewId == R.id.tv_image_preview_back){
+            //返回上一页，不对图片做任何操作
+            finish();
+        } if (viewId == R.id.tv_select_image){
+            //选中或取消选中当前图片
+            selectOrUnselectCurrentImage();
+        } else if (viewId == R.id.tv_preview_ok){
+            //点击完成，返回到调用页
+            Intent intent = new Intent();
+            intent.putParcelableArrayListExtra(MultiImageSelector.RESULT_MULTI_DATA, mSelectedImageList);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
+    }
+
+    /**
+     * 选中或取消选中当前预览的图片
+     */
+    private void selectOrUnselectCurrentImage() {
+        ImageInfo imageInfo = mPreviewImageList.get(currentPreviewIndex);
+        int index = mSelectedImageList.indexOf(imageInfo);
+        if (index != -1){
+            //图片在选中列表中，将其移除
+            mSelectedImageList.remove(index);
+            selectedImageAdapter.notifyItemRemoved(index);
+            //将本角标后的数据的index都减一
+            for (int i = index; i<mSelectedImageList.size(); i++){
+                ImageInfo info = mSelectedImageList.get(i);
+                info.setIndex(info.getIndex() - 1);
+            }
+            tvSelect.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_folder_unselected, 0, 0, 0);
+            if (mSelectedImageList.isEmpty()){
+                mSelectedRecyclerView.setVisibility(View.GONE);
+            }
+        } else {
+            //图片不在列表中，判断是否已经达到最大选择数
+            if (mSelectedImageList.size() >= maxSelectedCount){
+                //已达到最大选择数，给出提示
+                String msg = String.format(getString(R.string.cannot_select_more_image), maxSelectedCount);
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // 未达到醉倒选择数，将其添加到列表最后一位
+            imageInfo.setIndex(mSelectedImageList.size());
+            mSelectedImageList.add(imageInfo);
+            selectedImageAdapter.notifyItemInserted(mSelectedImageList.size() - 1);
+            mSelectedRecyclerView.scrollToPosition(mSelectedImageList.size() - 1);
+            selectedImageAdapter.notifyItemSelected(mSelectedImageList.size() - 1);
+            tvSelect.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_folder_selected, 0, 0, 0);
+            tvOk.setText(String.format(getString(R.string.image_selected_result), mSelectedImageList.size(), maxSelectedCount));
+            mSelectedRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onImageItemClick(int position) {
+        ImageInfo imageInfo = mSelectedImageList.get(position);
+        int index = mPreviewImageList.indexOf(imageInfo);
+        if (index != -1){
+            mPreviewRecyclerView.scrollToPosition(index);
+        }
     }
 }

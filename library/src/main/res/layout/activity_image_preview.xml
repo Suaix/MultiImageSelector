@@ -47,7 +47,8 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_above="@+id/rl_bottom_container"
-        android:background="@color/color_9B000000">
+        android:background="@color/color_9B000000"
+        android:visibility="gone">
 
     </android.support.v7.widget.RecyclerView>
 
