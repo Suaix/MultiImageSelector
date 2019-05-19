@@ -12,11 +12,12 @@
         android:layout_height="wrap_content"
         android:text="lauch Image Selector Activity" />
 
-    <TextView
-        android:id="@+id/tv_result"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_result"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@+id/bt_launch" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        app:layout_constraintTop_toBottomOf="@+id/bt_launch">
 
+    </android.support.v7.widget.RecyclerView>
 </android.support.constraint.ConstraintLayout>

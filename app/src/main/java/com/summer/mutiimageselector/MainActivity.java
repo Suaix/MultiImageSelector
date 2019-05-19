@@ -1,11 +1,11 @@
 package com.summer.mutiimageselector;
 
 import android.content.Intent;
-import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
 
 import com.summer.imageselector.MultiImageSelector;
 import com.summer.imageselector.data.ImageInfo;
@@ -15,14 +15,17 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<ImageInfo> selectedImageList;
-    private TextView tvResult;
-
+    private RecyclerView recyclerView;
+    private ImageResultAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tvResult = findViewById(R.id.tv_result);
+        recyclerView = findViewById(R.id.rv_result);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        adapter = new ImageResultAdapter();
+        recyclerView.setAdapter(adapter);
         findViewById(R.id.bt_launch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -38,14 +41,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK){
+        if (requestCode == 1 && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             selectedImageList = extras.getParcelableArrayList(MultiImageSelector.RESULT_MULTI_DATA);
-            tvResult.setText(selectedImageList.toString());
-        } else if (requestCode == 2 && resultCode == RESULT_OK){
+            adapter.setList(selectedImageList);
+        } else if (requestCode == 2 && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             ImageInfo imageInfo = extras.getParcelable(MultiImageSelector.RESULT_SINGLE_DATA);
-            tvResult.setText(imageInfo.toString());
+            if (selectedImageList == null){
+                selectedImageList = new ArrayList<ImageInfo>();
+            }
+            selectedImageList.add(imageInfo);
+            adapter.setList(selectedImageList);
         }
     }
 }

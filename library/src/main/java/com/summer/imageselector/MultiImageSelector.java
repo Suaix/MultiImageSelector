@@ -61,10 +61,6 @@ public class MultiImageSelector {
      * @param requestCode 请求码，用来处理返回的结果
      */
     public void startActivityForResult(Activity context, int requestCode) {
-        if (!hasReadStoragePermission(context)) {
-            Toast.makeText(context, R.string.no_read_storage_permission, Toast.LENGTH_SHORT).show();
-            return;
-        }
         Intent intent = new Intent(context, MultiImageSelectorActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("selectMode", mSelectMode);

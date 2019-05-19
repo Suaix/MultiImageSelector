@@ -311,18 +311,29 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback,
     public void onClick(View v) {
         int viewId = v.getId();
         if (viewId == R.id.tv_image_preview_back){
-            //返回上一页，不对图片做任何操作
-            finish();
+            //将该页面的数据返回上一页，本页面有可能已经对图片做了相关操作（增减、排序）
+            setResultAndFinishSelf(RESULT_CANCELED);
         } if (viewId == R.id.tv_select_image){
             //选中或取消选中当前图片
             selectOrUnselectCurrentImage();
         } else if (viewId == R.id.tv_preview_ok){
             //点击完成，返回到调用页
-            Intent intent = new Intent();
-            intent.putParcelableArrayListExtra(MultiImageSelector.RESULT_MULTI_DATA, mSelectedImageList);
-            setResult(RESULT_OK, intent);
-            finish();
+            setResultAndFinishSelf(RESULT_OK);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResultAndFinishSelf(RESULT_CANCELED);
+    }
+
+    private void setResultAndFinishSelf(int resultCode) {
+        Intent intent = new Intent();
+        intent.putParcelableArrayListExtra(MultiImageSelector.RESULT_MULTI_DATA, mSelectedImageList);
+        //这里使用cancel标识符，用来区分点击的是确定还是返回
+        setResult(resultCode, intent);
+        finish();
     }
 
     /**

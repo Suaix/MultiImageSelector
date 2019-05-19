@@ -10,4 +10,8 @@
     <string name="all_images">全部图片</string>
     <string name="select">选择</string>
     <string name="index_of_total">%1$d/%2$d</string>
+    <string name="tip_request_permission">请求权限</string>
+    <string name="des_request_permissin">需要读取外部存储的权限，用来加载图片使用</string>
+    <string name="cancel">取消</string>
+    <string name="ok">确定</string>
 </resources>

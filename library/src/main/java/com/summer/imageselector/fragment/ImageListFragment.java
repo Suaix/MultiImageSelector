@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +56,7 @@ public class ImageListFragment extends Fragment implements Callback, View.OnClic
 
     private int selectMode;
     private int maxImageSize;
-    private ArrayList<ImageInfo> selectedImageList;
+    private ArrayList<ImageInfo> mSelectedImageList;
 
     private final int PREVIEW_IMAGE_REQUEST_CODE = 1;
 
@@ -75,7 +73,7 @@ public class ImageListFragment extends Fragment implements Callback, View.OnClic
         if (arg != null) {
             selectMode = arg.getInt("selectMode");
             maxImageSize = arg.getInt("maxImageSize");
-            selectedImageList = arg.getParcelableArrayList("selectedImageList");
+            mSelectedImageList = arg.getParcelableArrayList("selectedImageList");
         }
     }
 
@@ -93,14 +91,14 @@ public class ImageListFragment extends Fragment implements Callback, View.OnClic
         mRecyclerView = view.findViewById(R.id.rv_image_list);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
         imageAdapter = new ImageAdapter(this, selectMode, maxImageSize);
-        imageAdapter.setSelectedImageList(selectedImageList);
+        imageAdapter.setSelectedImageList(mSelectedImageList);
         mRecyclerView.setAdapter(imageAdapter);
         mRecyclerView.addItemDecoration(new ImageItemDecoration());
         mImageFolderDes = view.findViewById(R.id.tv_image_folder_des);
         mImagePreview = view.findViewById(R.id.tv_image_preview);
 
         if (selectMode == MultiImageSelector.MULTI_MODE) {
-            onImageSelectedChanged(selectedImageList != null ? selectedImageList.size() : 0);
+            onImageSelectedChanged(mSelectedImageList != null ? mSelectedImageList.size() : 0);
         }
         createFolderPopwindow();
 
@@ -289,9 +287,17 @@ public class ImageListFragment extends Fragment implements Callback, View.OnClic
                         return imageInfo1.getIndex() - imageInfo2.getIndex();
                     }
                 });
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(MultiImageSelector.RESULT_MULTI_DATA, selectedImageList);
-                setResultAndFinish(bundle);
+                if (resultCode == Activity.RESULT_OK){
+                    //在预览页面点击的是完成，将结果返回上个页面
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList(MultiImageSelector.RESULT_MULTI_DATA, selectedImageList);
+                    setResultAndFinish(bundle);
+                } else if (resultCode == Activity.RESULT_CANCELED){
+                    // 在预览页面是点击返回，可能对结果进行了排序或增减
+                    mSelectedImageList = selectedImageList;
+                    imageAdapter.setSelectedImageList(mSelectedImageList);
+                    imageAdapter.notifyDataSetChanged();
+                }
             }
         }
     }
