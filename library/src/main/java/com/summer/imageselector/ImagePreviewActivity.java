@@ -147,7 +147,8 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback,
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setNavigationBarColor(Color.WHITE);
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.color_2D2D2D));
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
         setContentView(R.layout.activity_image_preview);
         initView();
@@ -181,7 +182,6 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback,
         selectedImageAdapter.setSelectedImageList(mSelectedImageList);
         if (!mSelectedImageList.isEmpty()){
             mSelectedRecyclerView.setVisibility(View.VISIBLE);
-            tvOk.setText(String.format(getString(R.string.image_selected_result), mSelectedImageList.size(), maxSelectedCount));
         }
 
         if (needLoadAllImages) {
@@ -189,6 +189,7 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback,
             mPresenter = new LocalImagePresenterImp(this, loaderManager, this);
             mPresenter.loadImageData();
         } else {
+            syncOkStatus();
             if (!mSelectedImageList.isEmpty()){
                 mPreviewImageList.addAll(mSelectedImageList);
             }
@@ -292,10 +293,8 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback,
         previewImageAdapter.setImageInfoList(mPreviewImageList);
 
         tvIndex.setText(String.format(getString(R.string.index_of_total), currentPreviewIndex + 1, images.size()));
-        int selectedImageSize = mSelectedImageList.size();
-        if (selectedImageSize > 0) {
-            tvOk.setText(String.format(getString(R.string.image_selected_result), selectedImageSize, maxSelectedCount));
-        }
+        syncOkStatus();
+
         if (currentPreviewIndex > 0) {
             mPreviewRecyclerView.scrollToPosition(currentPreviewIndex);
         }
@@ -370,8 +369,21 @@ public class ImagePreviewActivity extends AppCompatActivity implements Callback,
             mSelectedRecyclerView.scrollToPosition(mSelectedImageList.size() - 1);
             selectedImageAdapter.notifyItemSelected(mSelectedImageList.size() - 1);
             tvSelect.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_folder_selected, 0, 0, 0);
-            tvOk.setText(String.format(getString(R.string.image_selected_result), mSelectedImageList.size(), maxSelectedCount));
             mSelectedRecyclerView.setVisibility(View.VISIBLE);
+        }
+        syncOkStatus();
+    }
+
+    /**
+     * 同步完成状态
+     */
+    private void syncOkStatus(){
+        if (mSelectedImageList.size() > 0){
+            tvOk.setEnabled(true);
+            tvOk.setText(String.format(getString(R.string.image_selected_result), mSelectedImageList.size(), maxSelectedCount));
+        } else {
+            tvOk.setEnabled(false);
+            tvOk.setText(R.string.completed);
         }
     }
 

@@ -7,7 +7,7 @@
         android:id="@+id/rl_title"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#55000000">
+        android:background="@color/color_EAEAEA">
 
         <TextView
             android:id="@+id/tv_title_des"
@@ -15,11 +15,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
-            android:drawableLeft="@drawable/ic_left_back"
+            android:drawableLeft="@drawable/ic_black_back"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:text="@string/app_name"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="16sp" />
 
         <TextView
@@ -29,10 +29,12 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="16dp"
-            android:enabled="true"
+            android:background="@drawable/selector_green_gray_bg"
+            android:enabled="false"
             android:gravity="center"
-            android:paddingLeft="5dp"
+            android:paddingLeft="10dp"
             android:paddingTop="5dp"
+            android:paddingRight="10dp"
             android:paddingBottom="5dp"
             android:text="@string/completed"
             android:textColor="@color/color_done" />
@@ -53,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
-        android:background="#55000000">
+        android:background="@color/color_2D2D2D">
 
         <TextView
             android:id="@+id/tv_image_folder_des"

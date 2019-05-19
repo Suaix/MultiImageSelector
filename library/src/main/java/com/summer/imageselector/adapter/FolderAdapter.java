@@ -61,7 +61,12 @@ public class FolderAdapter extends BaseAdapter {
         holder.tvFolderName.setText(folderInfo.getName());
         List<ImageInfo> imageInfoList = folderInfo.getImageInfoList();
         int imageSize = imageInfoList == null ? 0 : imageInfoList.size();
-        holder.tvFolderDes.setText(String.format(context.getString(R.string.folder_des), imageSize));
+        if (imageSize > 0){
+            holder.tvFolderDes.setText(String.format(context.getString(R.string.folder_des), imageSize));
+            holder.tvFolderDes.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvFolderDes.setVisibility(View.GONE);
+        }
         if (position == lastSelectedIndex) {
             holder.ivFolderStatus.setImageResource(R.drawable.ic_folder_selected);
         } else {

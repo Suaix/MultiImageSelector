@@ -82,9 +82,6 @@ public class LocalImagePresenterImp implements IImagePresenter, LoaderManager.Lo
             //加载单个文件夹
             List<ImageInfo> imageInfoList = folderInfo.getImageInfoList();
             mCallback.onImageListResult(imageInfoList);
-//            Bundle args = new Bundle();
-//            args.putString("path", folderInfo.getPath());
-//            mLoaderManager.restartLoader(ID_LOAD_FOLDER, args, this);
         }
     }
 

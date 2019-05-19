@@ -13,7 +13,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@android:color/white">
+        android:background="@color/color_EAEAEA">
 
         <TextView
             android:id="@+id/tv_image_preview_back"
@@ -33,12 +33,13 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
             android:background="@drawable/rect_green_nine_rad"
+            android:enabled="true"
             android:paddingLeft="10dp"
             android:paddingTop="5dp"
             android:paddingRight="10dp"
             android:paddingBottom="5dp"
             android:text="@string/completed"
-            android:textColor="@android:color/white"
+            android:textColor="@color/color_done"
             android:textSize="16sp" />
     </RelativeLayout>
 

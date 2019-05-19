@@ -70,6 +70,10 @@ public class SelectedImageAdapter extends RecyclerView.Adapter<SelectedImageAdap
         ImageInfo toImageInfo = mSelectedImageList.get(toPosition);
         toImageInfo.setIndex(fromPosition+1);
         Collections.swap(mSelectedImageList, fromPosition, toPosition);
+        if (currentSelectedIndex == fromPosition){
+            //如果要移动的图片也是当前选中的图片，需要将当前选中的位置也修改为移动后位置
+            currentSelectedIndex = toPosition;
+        }
         //通知数据移动
         notifyItemMoved(fromPosition, toPosition);
     }

@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
 import android.util.Log;
+import android.view.View;
 
 import com.summer.imageselector.fragment.ImageListFragment;
 import com.summer.library.R;
@@ -30,7 +31,8 @@ public class MultiImageSelectorActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= 21){
-            getWindow().setNavigationBarColor(Color.GRAY);
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.color_2D2D2D));
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
         setContentView(R.layout.activity_multi_selector_container);
         if (hasReadStoragePermission()){
