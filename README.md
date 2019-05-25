@@ -2,11 +2,8 @@
 图片选择组件，模仿微信图片选择样式
 
 ## 效果展示
-<img src='/screenshot/image_list.png' width=200 height=356>
-<img src='/screenshot/image_dir_list.png' width=200 height=356>
-<img src='/screenshot/selected_image_preview.png' width=200 height=356>
-<img src='/screenshot/all_image_preivew.png' width=200 height=356>
-<img src='/screenshot/select_result.png' width=200 height=356>
+<img src='/screenshot/image_list.png' width=200 height=356><img src='/screenshot/image_dir_list.png' width=200 height=356><img src='/screenshot/selected_image_preview.png' width=200 height=356>
+<img src='/screenshot/all_image_preivew.png' width=200 height=356><img src='/screenshot/select_result.png' width=200 height=356>
 ## 集成方式
 将library作为项目的module导入自己的项目，或者将源码导入，暂时不提供gradle依赖导入
 ## 配置内容
