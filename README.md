@@ -9,11 +9,12 @@
 ## 配置内容
 只需要简单通过MultiImageSelector.Builder构建一个选择器即可启动图片选择页面，通过startActivityForResult来启动图片选择页面，相应地需要通过启动页面在onActivityResult里接收处理返回结果，示例如下：
 ```
-MultiImageSelector.with(MultiImageSelector.MULTI_MODE) //多图选择模式
-                        .maxImageSize(9) //最多选择9张图片
-                        .selectedImageList(selectedImageList) //当前已经选择的图片集合
+MultiImageSelector.with(MainActivity.this, MultiImageSelector.MULTI_MODE) //多图选择模式
+                        .maxImageSize(9) //最大图片数量
+                        .selectedImageList(selectedImageList) //已选择图片列表
+                        .registerImageLoader(new GlideImageLoader()) //注册自己的图片加载器
                         .build()
-                        .startActivityForResult(MainActivity.this, 1);
+                        .show(1);
 
 ```
 ## 版本更新记录
