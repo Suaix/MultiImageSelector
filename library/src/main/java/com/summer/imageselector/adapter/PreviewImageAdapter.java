@@ -8,11 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
+import com.summer.imageselector.MultiImageSelector;
 import com.summer.imageselector.data.ImageInfo;
 import com.summer.library.R;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,9 +36,10 @@ public class PreviewImageAdapter extends RecyclerView.Adapter<PreviewImageAdapte
     @Override
     public void onBindViewHolder(@NonNull PreviewImageHolder holder, int position) {
         ImageInfo imageInfo = imageInfoList.get(position);
-        Glide.with(mActivity)
-                .load(new File(imageInfo.getPath()))
-                .into(holder.imageView);
+        MultiImageSelector.imageLoader.loadBitmap(imageInfo, holder.imageView);
+//        Glide.with(mActivity)
+//                .load(new File(imageInfo.getPath()))
+//                .into(holder.imageView);
     }
 
     @Override

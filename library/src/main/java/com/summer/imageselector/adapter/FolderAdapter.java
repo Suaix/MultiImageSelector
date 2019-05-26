@@ -8,12 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.summer.imageselector.MultiImageSelector;
 import com.summer.imageselector.data.FolderInfo;
 import com.summer.imageselector.data.ImageInfo;
 import com.summer.library.R;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -55,9 +54,10 @@ public class FolderAdapter extends BaseAdapter {
             holder = (FolderHolder) view.getTag();
         }
         FolderInfo folderInfo = folderInfoList.get(position);
-        Glide.with(holder.ivFolderCover)
-                .load(new File(folderInfo.getCover().getPath()))
-                .into(holder.ivFolderCover);
+        MultiImageSelector.imageLoader.loadBitmap(folderInfo.getCover(), holder.ivFolderCover);
+//        Glide.with(holder.ivFolderCover)
+//                .load(new File(folderInfo.getCover().getPath()))
+//                .into(holder.ivFolderCover);
         holder.tvFolderName.setText(folderInfo.getName());
         List<ImageInfo> imageInfoList = folderInfo.getImageInfoList();
         int imageSize = imageInfoList == null ? 0 : imageInfoList.size();

@@ -7,12 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.summer.imageselector.ImagePreviewActivity;
+import com.summer.imageselector.MultiImageSelector;
 import com.summer.imageselector.data.ImageInfo;
 import com.summer.library.R;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -40,7 +38,7 @@ public class SelectedImageAdapter extends RecyclerView.Adapter<SelectedImageAdap
     @Override
     public void onBindViewHolder(@NonNull ImageHolder holder, final int position) {
         ImageInfo imageInfo = mSelectedImageList.get(position);
-        Glide.with(holder.ivImage).load(new File(imageInfo.getPath())).into(holder.ivImage);
+        MultiImageSelector.imageLoader.loadBitmap(imageInfo, holder.ivImage);
         if (position == currentSelectedIndex) {
             holder.selectedMark.setVisibility(View.VISIBLE);
         } else {

@@ -29,11 +29,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_launch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MultiImageSelector.with(MultiImageSelector.MULTI_MODE)
+                MultiImageSelector.with(MainActivity.this, MultiImageSelector.MULTI_MODE)
                         .maxImageSize(9)
                         .selectedImageList(selectedImageList)
+                        .registerImageLoader(new GlideImageLoader())
                         .build()
-                        .startActivityForResult(MainActivity.this, 1);
+                        .show(1);
             }
         });
     }
