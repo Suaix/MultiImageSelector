@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
 
 android {
     compileSdkVersion 27
@@ -22,6 +23,26 @@ android {
         }
     }
 
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    bintray {
+        user = properties.getProperty("bintray.user")
+        key = properties.getProperty("bintrary.apikey")
+        pkg {
+            repo = 'maven'
+            name = 'imageselector'
+            vcsUrl = 'https://github.com/Suaix/MultiImageSelector.git'
+            licenses = ['Apache-2.0']
+            version {
+                name = '1.0.0'
+                desc = 'multifunctional image selector'
+                released  = new Date()
+                vcsTag = 'v1.0.0'
+            }
+            configurations = ['archives']
+        }
+    }
 }
 
 dependencies {
