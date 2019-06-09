@@ -1,16 +1,12 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.jfrog.bintray'
 
 android {
     compileSdkVersion 27
-
-
-
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -20,27 +16,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    bintray {
-        user = properties.getProperty("bintray.user")
-        key = properties.getProperty("bintrary.apikey")
-        pkg {
-            repo = 'maven'
-            name = 'imageselector'
-            vcsUrl = 'https://github.com/Suaix/MultiImageSelector.git'
-            licenses = ['Apache-2.0']
-            version {
-                name = '1.0.0'
-                desc = 'multifunctional image selector'
-                released  = new Date()
-                vcsTag = 'v1.0.0'
-            }
-            configurations = ['archives']
         }
     }
 }
@@ -53,3 +28,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
+
+apply from: 'bintrayUpload.gradle'

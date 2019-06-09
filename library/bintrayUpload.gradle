@@ -1,0 +1,85 @@
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def bintrayUser = properties.getProperty("bintray.user")
+def bintrayApiKey = properties.getProperty("bintrary.apikey")
+def bintrayUserOrg = properties.getProperty("bintray.userOrg")
+def bintrayRepo = properties.getProperty("bintray.repo")
+def bintrayGroupId = properties.getProperty("bintray.groupId")
+def bintrayArtifactId = properties.getProperty("bintray.artifactId")
+def projectPackaging = properties.getProperty("bintray.packaging")
+
+def siteUrl = properties.getProperty("project.sitUrl")
+def gitUrl = properties.getProperty("project.gitUrll")
+def developerId = properties.getProperty("project.developerId")
+def developerName = properties.getProperty("project.developerName")
+def developerEmail = properties.getProperty("project.developerEmail")
+
+group = bintrayGroupId
+version = '1.0.1'
+
+bintray {
+    user = bintrayUser
+    key = bintrayApiKey
+    configurations = ['archives']
+    pkg {
+        userOrg = bintrayUserOrg
+        repo = bintrayRepo
+        name = bintrayArtifactId
+        vcsUrl = gitUrl
+        licenses = ['Apache-2.0']
+        publish = true
+        version {
+            name = version
+            desc = 'multifunctional android image selector'
+            released  = new Date()
+        }
+    }
+}
+
+// 配置生成POM.xml文件的参数
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                name 'library'
+                groupId bintrayGroupId
+                artifactId bintrayArtifactId
+                version version
+                packaging projectPackaging
+                url siteUrl
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id developerId
+                        name developerName
+                        email developerEmail
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+//生成sources.jar
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
+
