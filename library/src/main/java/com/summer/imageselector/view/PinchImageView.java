@@ -1572,7 +1572,7 @@ public class PinchImageView extends ImageView  {
         /**
          * 计算点除以矩阵的值
          *
-         * matrix.mapPoints(unknownPoint) -> point
+         * matrix.mapPoints(unknownPoint)  point
          * 已知point和matrix,求unknownPoint的值.
          *
          * @param point

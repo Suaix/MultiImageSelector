@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import com.summer.imageselector.data.ImageInfo;
 
 /**
- * @Author: Summer
- * @Date: 2019-05-26
- * @Package: com.summer.library
- * @Des: 加载请求
+ * Author: Summer
+ * Date: 2019-05-26
+ * Package: com.summer.library
+ * Des: 加载请求
  **/
 public class LoaderRequest implements ViewTreeObserver.OnPreDrawListener {
 

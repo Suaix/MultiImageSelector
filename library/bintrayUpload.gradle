@@ -18,7 +18,7 @@ def developerName = properties.getProperty("project.developerName")
 def developerEmail = properties.getProperty("project.developerEmail")
 
 group = bintrayGroupId
-version = '1.0.1'
+version = '1.0.2'
 
 bintray {
     user = bintrayUser
@@ -31,6 +31,7 @@ bintray {
         vcsUrl = gitUrl
         licenses = ['Apache-2.0']
         publish = true
+        override = true
         version {
             name = version
             desc = 'multifunctional android image selector'
@@ -73,13 +74,39 @@ install {
     }
 }
 
-//生成sources.jar
+
+//sources.jar
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
 }
 
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+//javadoc.jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
 artifacts {
+    archives javadocJar
     archives sourcesJar
+}
+
+//javadoc config
+javadoc {
+    options {
+        encoding 'UTF-8'
+        charSet 'UTF-8'
+        author true
+        version version
+        links "http://docs.oracle.com/javase/7/docs/api"
+        title 'MultiImageSelector'
+    }
+    options.addStringOption('Xdoclint:none', '-quiet')
 }
 

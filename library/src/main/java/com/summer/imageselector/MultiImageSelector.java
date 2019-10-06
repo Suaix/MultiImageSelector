@@ -7,21 +7,18 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.widget.Toast;
 
 import com.summer.imageselector.data.ImageInfo;
 import com.summer.library.IImageLoader;
 import com.summer.library.LocalImageLoader;
-import com.summer.library.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * @Author: Summer
- * @Date: 2019-05-26
- * @Package: com.summer.imageselector
- * @Des: 多图选择器，通过该选择器配置图片选择属性并启动页面
+ * Author: Summer
+ * Date: 2019-05-26
+ * Package: com.summer.imageselector
+ * Des: 多图选择器，通过该选择器配置图片选择属性并启动页面
  **/
 public class MultiImageSelector {
     /**
@@ -101,10 +98,10 @@ public class MultiImageSelector {
         return new Builder(activity, selectMode);
     }
     /**
-     * @Author: Summer
-     * @Date: 2019-05-26
-     * @Package: com.summer.imageselector
-     * @Des: 图片选择器的构建者
+     * Author: Summer
+     * Date: 2019-05-26
+     * Package: com.summer.imageselector
+     * Des: 图片选择器的构建者
      **/
     public static class Builder {
         private Activity activity;
